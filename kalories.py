@@ -44,6 +44,7 @@ class Food(db.Model):
 
 class API(db.Model):
     __tablename__ = 'api'
+    id = db.Column('todo_id', db.Integer, primary_key=True)
     date = db.Column(db.Integer)
     food = db.Column(db.Integer) #ForeignKey("food.name"))
     quantity = db.Column(db.Integer)
