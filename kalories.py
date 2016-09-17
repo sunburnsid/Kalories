@@ -27,7 +27,7 @@ class Food(db.Model):
     carbs = db.Column(db.Float)
     fat = db.Column(db.Float)
     calcium = db.Column(db.Float)
-    vitamins = db.Column(db.Float)
+    vitamins = db.Column(db.String(20))
     healthy = db.Column(db.Boolean)
     calories=db.Column(db.Float)
     unit = db.Column(db.String(60))
