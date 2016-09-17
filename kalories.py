@@ -13,8 +13,7 @@ import hashlib
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(
-    tempfile.gettempdir(), 'test.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///carrots.db'
 app.config['DEBUG'] = True
 db = SQLAlchemy(app)
 
@@ -27,19 +26,25 @@ class Food(db.Model):
     carbs = db.Column(db.Float)
     fat = db.Column(db.Float)
     calcium = db.Column(db.Float)
-    vitamins = db.Column(db.String(20))
+    vitaminA = db.Column(db.Float)
+    vitaminB = db.Column(db.Float)
+    vitaminC = db.Column(db.Float)
+    vitaminK = db.Column(db.Float)
     healthy = db.Column(db.Boolean)
     calories=db.Column(db.Float)
     unit = db.Column(db.String(60))
 
     def __init__(self, name, protein, carbs, fat, calcium,
-        vitamins, healthy, calories, unit):
+        vitaminA, vitaminB, vitaminC, vitaminK, healthy, calories, unit):
         self.name     = name
         self.protein  = protein
         self.carbs    = carbs
         self.fat      = fat
         self.calcium  = calcium
-        self.vitamins = vitamins
+        self.vitaminA = vitaminA
+        self.vitaminB = vitaminB
+        self.vitaminC = vitaminC
+        self.vitaminK = vitaminK
         self.healthy  = healthy
         self.calories = calories
         self.unit     = unit
@@ -97,9 +102,11 @@ def update_done():
     return redirect(url_for('show_all'))
 
 
-@app.route('/get_suggestions/<string:base_id>', methods=['GET'])
-def getSuggestions(base_id):
+@app.route('/get_suggestions', methods=['POST'])
+def getSuggestions():
 
+    image = request.get_json(silent=True)
+    base_id = data['base_id']
     dest = "/static/" + abs(hash(base_id)) + ".png"
 
     with open(dest, "wb") as fh:
