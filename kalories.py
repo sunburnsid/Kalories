@@ -44,10 +44,12 @@ class Food(db.Model):
 
 class API(db.model):
     __tablename__ = 'api'
-    date = db.Column(db.String)
+    date = db.Column(db.Integer)
     food = db.Column(db.Integer, ForeignKey(food.name))
     quantity = db.Column(db.Integer)
-    base64file = db.Column(db.String)
+    url = db.Column(db.String)
+
+    def __init__(self, date, food, quantity, url)
 
 
 @app.route('/')
@@ -93,8 +95,8 @@ def getSuggestions(base_id):
     #clarifai_api = ClarifaiApi() # assumes environment variables are set.
     #result = clarifai_api.tag_images(open(text, 'rb'))
     result = {u'status_code': u'OK', u'status_msg': u'All images in request have co$
-    parsed= result['results'][0]['result']['tag']['classes']
-    answer=[]
+    parsed = result['results'][0]['result']['tag']['classes']
+    answer = []
     for val in parsed:
         if (db.session.query(food.name).filter_by(name=val).scalar() is not None):
             answer.append(val)
@@ -102,8 +104,8 @@ def getSuggestions(base_id):
 
 @app.route('/confirmFood', methods=['POST'])
 def confirmFood():
-    values=[]
-    content= request.get_json(silent=True)
+    values  = []
+    content = request.get_json(silent=True)
     for food,amt in content['content']:
         values.add(session.query(food.protein, food.carbs, food.fat, food.fiber,
         food.calcium, food.vitamins, food.healthy, food.calories).filter_by(
@@ -112,9 +114,15 @@ def confirmFood():
     return flask.jsonify(protein=protein,carbs=carbs, fat=fat,fiber=fiber,
     calcium=calcium, vitamins=vitamins, healthy=healthy, calories=calories)
 
-@app.route('/getDay/<day>', methods = ['GET'])
+@app.route('/getDay/<int:day>', methods = ['GET'])
 def giveDay(day):
-    
+    dd  = day / 10000
+    dd1 = day % 10000
+    mm  = dd1 / 100
+    yy  = dd1 % 100
+
+
+
 
 if __name__ == '__main__':
 app.run()
