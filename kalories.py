@@ -71,8 +71,9 @@ def update_done():
     return redirect(url_for('show_all'))
 
 
-@app.route('/get_suggestions', methods=['GET', 'POST'])
+@app.route('/get_suggestions', methods=['POST'])
 def get_suggestions():
+    imagefile = flask.request.files.get('imagefile','')
     #clarifai_api = ClarifaiApi() # assumes environment variables are set.
     #result = clarifai_api.tag_images(open('/static/.jpg', 'rb'))
     result = {u'status_code': u'OK', u'status_msg': u'All images in request have co$
