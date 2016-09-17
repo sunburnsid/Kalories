@@ -13,7 +13,9 @@ import hashlib
 
 
 app = Flask(__name__)
-app.config.from_pyfile('kalories.cfg')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(
+    tempfile.gettempdir(), 'test.db')
+app.config['DEBUG'] = True
 db = SQLAlchemy(app)
 
 
@@ -30,7 +32,7 @@ class Food(db.Model):
     calories=db.Column(db.Float)
     unit = db.Column(db.String(60))
 
-    def __init__(self, name, protein, carbs, fat, fiber, calcium,
+    def __init__(self, name, protein, carbs, fat, calcium,
         vitamins, healthy, calories, unit):
         self.name     = name
         self.protein  = protein
@@ -44,7 +46,7 @@ class Food(db.Model):
 
 class API(db.Model):
     __tablename__ = 'api'
-    id = db.Column('todo_id', db.Integer, primary_key=True)
+    id = db.Column('api_id', db.Integer, primary_key=True)
     date = db.Column(db.Integer)
     food = db.Column(db.Integer) #ForeignKey("food.name"))
     quantity = db.Column(db.Integer)
@@ -146,10 +148,6 @@ def confirmFood():
 
 @app.route('/getDay/<int:day>', methods = ['GET'])
 def giveDay(day):
-    dd  = day / 10000
-    dd1 = day % 10000
-    mm  = dd1 / 100
-    yy  = dd1 % 100
 
 
 if __name__ == '__main__':
