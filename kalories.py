@@ -28,10 +28,11 @@ class Food(db.Model):
     calcium = db.Column(db.Float)
     vitamins = db.Column(db.Float)
     healthy = db.Column(db.Boolean)
+    calories=db.Column(db.Float)
     unit = db.Column(db.String(60))
 
     def __init__(self, name, protein, carbs, fat, fiber, calcium,
-        vitamins, healthy, unit):
+        vitamins, healthy, calories, unit):
         self.name     = name
         self.protein  = protein
         self.carbs    = carbs
@@ -39,6 +40,7 @@ class Food(db.Model):
         self.calcium  = calcium
         self.vitamins = vitamins
         self.healthy  = healthy
+        self.calories = calories
         self.unit     = unit
 
 class API(db.model):
@@ -99,7 +101,17 @@ def getSuggestions():
             answer.append(val)
     return flask.jsonify(food_suggestions=answer)
 
-
+@app.route('/confirmFood', methods=['POST'])
+def confirmFood():
+    values=[]
+    content= request.get_json(silent=True)
+    for food,amt in content['content']:
+        values.add(session.query(food.protein, food.carbs, food.fat, food.fiber,
+        food.calcium, food.vitamins, food.healthy, food.calories).filter_by(
+        name = food).first())
+    #multiply values by amt 
+    return flask.jsonify(protein=protein,carbs=carbs, fat=fat,fiber=fiber,
+    calcium=calcium, vitamins=vitamins, healthy=healthy, calories=calories)
 
 if __name__ == '__main__':
 app.run()
