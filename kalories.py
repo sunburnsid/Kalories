@@ -9,6 +9,7 @@ from clarifai.client import ClarifaiApi
 import os
 import tempfile
 import base64
+import random, string
 
 
 app = Flask(__name__)
@@ -104,12 +105,14 @@ def update_done():
 @app.route('/get_suggestions', methods=['POST'])
 def getSuggestions():
 
-    image = request.get_json(silent=True)
-    base_id = data['base_id']
-    dest = "/static/" + abs(hash(base_id)) + ".png"
+    image = request.get_json(silent=False, force=True)
+    print image
+    base_id = image['base_id']
+    dest = "static/" + randomword(14) + ".png"
 
-    with open(dest, "wb") as fh:
-        fh.write(base_id.decode('base64'))
+    image_64_decode = base64.decodestring(base_id) 
+    image_result = open(dest, 'wb') # create a writable image and write the decoding result
+    image_result.write(image_64_decode)
 
     #clarifai_api = ClarifaiApi() # assumes environment variables are set.
     #result = clarifai_api.tag_images(open(dest, 'rb'))
@@ -124,7 +127,11 @@ def getSuggestions():
     for val in parsed:
         if (db.session.query(food.name).filter_by(name=val).scalar() is not None):
             answer.append(val)
-    return flask.jsonify(suggestions=answer, url=text)
+    
+    if answer == []:
+        return flask.jsonify(suggestions=[], url=dest)
+
+    return flask.jsonify(suggestions=answer, url=dest)
 
 @app.route('/confirmFood', methods=['POST'])
 def confirmFood():
@@ -170,5 +177,8 @@ def giveDay(day):
     return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat, 
         "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories}, "foodpics": foodpics})
 
+def randomword(length):
+   return ''.join(random.choice(string.lowercase) for i in range(length))
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host= '0.0.0.0')
