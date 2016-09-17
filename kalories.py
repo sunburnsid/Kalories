@@ -140,16 +140,29 @@ def confirmFood():
         calories += values["calories"]
         vitamins.add(values["vitamins"])
         healthy=values["healthy"]
-    return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat,"fiber":fiber,
-    "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories},
+    return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat, 
+        "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories},
     "url":content['url']})
 
 @app.route('/getDay/<int:day>', methods = ['GET'])
 def giveDay(day):
-    dd  = day / 10000
-    dd1 = day % 10000
-    mm  = dd1 / 100
-    yy  = dd1 % 100
+    protein, carbs, fat, calcium, calories = (0 for i in range(5))
+    foodpics = []
+    for key in session.query(api.food).filter_by(date=day).all():
+        f = session.query(food).get(key)
+        protein += f.protein
+        carbs += f.carbs
+        fat += f.fat
+        calcium += f.calcium
+        calories += f.calories
+        foodpics.append(f.url)
+
+    healthy = True
+
+    return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat, 
+        "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories}, "foodpics": foodpics})
+
+
 
 
 if __name__ == '__main__':
