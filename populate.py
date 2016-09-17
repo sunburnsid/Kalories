@@ -23,5 +23,12 @@ def initiate():
 
 	db.session.commit()
 
+def importCSV():
+    with open('ABBREV.csv', 'rb') as csvfile:
+        reader=csv.reader(csvfile)
+        for row in reader:
+            print row
+
 if __name__ == '__main__':
 	initiate()
+        importCSV()
