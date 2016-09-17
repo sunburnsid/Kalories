@@ -9,7 +9,6 @@ from clarifai.client import ClarifaiApi
 import os
 import tempfile
 import base64
-import hashlib
 
 
 app = Flask(__name__)
