@@ -83,7 +83,7 @@ def update_done():
 
 
 @app.route('/get_suggestions/<string:base_id>', methods=['GET'])
-def getSuggestions():
+def getSuggestions(base_id):
 
     dest = "/static/" + abs(hash(base_id)) + ".png"
 
@@ -111,6 +111,10 @@ def confirmFood():
     #multiply values by amt 
     return flask.jsonify(protein=protein,carbs=carbs, fat=fat,fiber=fiber,
     calcium=calcium, vitamins=vitamins, healthy=healthy, calories=calories)
+
+@app.route('/getDay/<day>', methods = ['GET'])
+def giveDay(day):
+    
 
 if __name__ == '__main__':
 app.run()
