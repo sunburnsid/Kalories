@@ -19,7 +19,7 @@ db = SQLAlchemy(app)
 
 class Food(db.Model):
     __tablename__ = 'food'
-    id = db.Column('todo_id', db.Integer, primary_key=True)
+    id = db.Column('food_id', db.Integer, primary_key=True)
     name = db.Column(db.String(60), unique=True)
     protein = db.Column(db.Float)
     carbs = db.Column(db.Float)
@@ -149,8 +149,6 @@ def giveDay(day):
     dd1 = day % 10000
     mm  = dd1 / 100
     yy  = dd1 % 100
-
-
 
 
 if __name__ == '__main__':
