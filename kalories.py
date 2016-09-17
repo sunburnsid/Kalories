@@ -17,7 +17,6 @@ app.config.from_pyfile('kalories.cfg')
 db = SQLAlchemy(app)
 
 
-
 class Food(db.Model):
     __tablename__ = 'food'
     id = db.Column('todo_id', db.Integer, primary_key=True)
@@ -83,23 +82,23 @@ def update_done():
     return redirect(url_for('show_all'))
 
 
-@app.route('/get_suggestions/<string:base_id>', methods=['POST'])
+@app.route('/get_suggestions/<string:base_id>', methods=['GET'])
 def getSuggestions():
 
-    text abs(hash(base_id))
+    dest = "/static/" + abs(hash(base_id)) + ".png"
 
-    with open("/static/imageToSave.png", "wb") as fh:
-        fh.write(imgData.decode('base64'))
+    with open(dest, "wb") as fh:
+        fh.write(base_id.decode('base64'))
 
     #clarifai_api = ClarifaiApi() # assumes environment variables are set.
-    #result = clarifai_api.tag_images(open('/static/.jpg', 'rb'))
+    #result = clarifai_api.tag_images(open(text, 'rb'))
     result = {u'status_code': u'OK', u'status_msg': u'All images in request have co$
     parsed= result['results'][0]['result']['tag']['classes']
     answer=[]
     for val in parsed:
         if (db.session.query(food.name).filter_by(name=val).scalar() is not None):
             answer.append(val)
-    return flask.jsonify(food_suggestions=answer)
+    return flask.jsonify(suggestions=answer, url=text)
 
 @app.route('/confirmFood', methods=['POST'])
 def confirmFood():
