@@ -45,7 +45,7 @@ class Food(db.Model):
 class API(db.model):
     __tablename__ = 'api'
     date = db.Column(db.String)
-    food = db.Column(db.Integer)
+    food = db.Column(db.Integer, ForeignKey(food.name))
     quantity = db.Column(db.Integer)
     base64file = db.Column(db.String)
 
