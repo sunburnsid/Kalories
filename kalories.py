@@ -62,14 +62,6 @@ class API(db.Model):
         self.quantity=quantity
         self.url=url
 
-@app.route('/upload')
-#import one time
-def uploadcsv():
-    with open('ABBREV.csv', 'rb') as csvfile:
-        reader=csv.reader(csvfile)
-        for row in reader:
-            print row
-
 @app.route('/')
 def show_all():
     return render_template('show_all.html',
