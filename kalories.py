@@ -125,7 +125,7 @@ def getSuggestions():
     parsed= result['results'][0]['result']['tag']['classes']
     answer=[]
     for val in parsed:
-        if (db.session.query(food.name).filter_by(name=val).scalar() is not None):
+        if (db.session.query.with_entities(food.name).filter_by(name=val).scalar() is not None):
             answer.append(val)
     
     if answer == []:
@@ -135,28 +135,38 @@ def getSuggestions():
 
 @app.route('/confirmFood', methods=['POST'])
 def confirmFood():
-    values  = []
-    content = request.get_json(silent=True)
     #initialize values
-    protein, carbs, fat, calcium, calories = (0 for i in range(5))
-    vitamins=set()
-    healthy=True
-    content= request.get_json(silent=True)
-    #iterate through list in json and accumulate nutrition values
+    healthy=False
+    protein, carbs, fat, calcium, calories, vitaminA, vitaminB, vitaminC,
+    vitaminK = (0 for i in range(9))
 
+    content= request.get_json(silent=True)
+
+    #iterate through list in json and accumulate nutrition values
     for food,amt in content['content']:
         values = session.query(food.protein, food.carbs, food.fat,
         food.calcium, food.vitamins, food.healthy, food.calories).filter_by(
         name = food).first()
+
         protein += values["protein"]*amt
         carbs += values["carbs"]*amt
         fat += values["fat"]*amt
         calcium += values["calcium"]
         calories += values["calories"]
-        vitamins.add(values["vitamins"])
-        healthy=values["healthy"]
-    return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat, 
-        "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories},
+        vitaminA += values["vitaminA"]
+        vitaminB += values["vitaminB"]
+        vitaminC += values["vitaminC"]
+        vitaminK += values["vitaminK"]
+        healthy=values["healthy"] or healthy
+    #add vitamins
+    vitaminList=[]
+    vitaminRequirements=[5, 0.5, 10, 10]
+    for vit,amt in [("A",5),("B",0.5),("C",10),("K",10)]:
+        if (values["vitamin" + vit] > amt):
+            vitaminList.append(vit)
+
+    return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat,
+        "calcium":calcium, "vitamins":vitaminList, "healthy":healthy, "calories":calories},
     "url":content['url']})
 
 @app.route('/getDay/<int:day>', methods = ['GET'])
@@ -171,8 +181,7 @@ def giveDay(day):
         calcium += f.calcium
         calories += f.calories
         foodpics.append(f.url)
-
-    healthy = True
+        healthy = True
 
     return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat, 
         "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories}, "foodpics": foodpics})
