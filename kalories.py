@@ -13,7 +13,9 @@ import hashlib
 
 
 app = Flask(__name__)
-app.config.from_pyfile('kalories.cfg')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(
+    tempfile.gettempdir(), 'test.db')
+app.config['DEBUG'] = True
 db = SQLAlchemy(app)
 
 
@@ -25,12 +27,12 @@ class Food(db.Model):
     carbs = db.Column(db.Float)
     fat = db.Column(db.Float)
     calcium = db.Column(db.Float)
-    vitamins = db.Column(db.Float)
+    vitamins = db.Column(db.String(20))
     healthy = db.Column(db.Boolean)
     calories=db.Column(db.Float)
     unit = db.Column(db.String(60))
 
-    def __init__(self, name, protein, carbs, fat, fiber, calcium,
+    def __init__(self, name, protein, carbs, fat, calcium,
         vitamins, healthy, calories, unit):
         self.name     = name
         self.protein  = protein
@@ -44,7 +46,7 @@ class Food(db.Model):
 
 class API(db.Model):
     __tablename__ = 'api'
-    id = db.Column('todo_id', db.Integer, primary_key=True)
+    id = db.Column('api_id', db.Integer, primary_key=True)
     date = db.Column(db.Integer)
     food = db.Column(db.Integer) #ForeignKey("food.name"))
     quantity = db.Column(db.Integer)
@@ -161,9 +163,6 @@ def giveDay(day):
 
     return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat, 
         "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories}, "foodpics": foodpics})
-
-
-
 
 if __name__ == '__main__':
     app.run()
