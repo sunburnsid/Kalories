@@ -8,11 +8,14 @@ from werkzeug.utils import secure_filename
 from clarifai.client import ClarifaiApi
 import os
 import tempfile
+import base64
+import hashlib
 
 
 app = Flask(__name__)
 app.config.from_pyfile('kalories.cfg')
 db = SQLAlchemy(app)
+
 
 
 class Food(db.Model):
@@ -22,7 +25,6 @@ class Food(db.Model):
     protein = db.Column(db.Float)
     carbs = db.Column(db.Float)
     fat = db.Column(db.Float)
-    fiber = db.Column(db.Float)
     calcium = db.Column(db.Float)
     vitamins = db.Column(db.Float)
     healthy = db.Column(db.Boolean)
@@ -35,7 +37,6 @@ class Food(db.Model):
         self.protein  = protein
         self.carbs    = carbs
         self.fat      = fat
-        self.fiber    = fiber
         self.calcium  = calcium
         self.vitamins = vitamins
         self.healthy  = healthy
@@ -43,11 +44,12 @@ class Food(db.Model):
         self.unit     = unit
 
 class API(db.model):
-    __tablename__ = 'food'
+    __tablename__ = 'api'
     date = db.Column(db.String)
     food = db.Column(db.Integer, ForeignKey(food.name))
     quantity = db.Column(db.Integer)
-    url = db.Column(db.String)
+    base64file = db.Column(db.String)
+
 
 @app.route('/')
 def show_all():
@@ -81,9 +83,14 @@ def update_done():
     return redirect(url_for('show_all'))
 
 
-@app.route('/get_suggestions', methods=['POST'])
+@app.route('/get_suggestions/<string:base_id>', methods=['POST'])
 def getSuggestions():
-    imagefile = flask.request.files.get('imagefile','')
+
+    text abs(hash(base_id))
+
+    with open("/static/imageToSave.png", "wb") as fh:
+        fh.write(imgData.decode('base64'))
+
     #clarifai_api = ClarifaiApi() # assumes environment variables are set.
     #result = clarifai_api.tag_images(open('/static/.jpg', 'rb'))
     result = {u'status_code': u'OK', u'status_msg': u'All images in request have co$
