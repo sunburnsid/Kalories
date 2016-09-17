@@ -15,3 +15,4 @@ var/
 .installed.cfg
 *.egg
 *.pyc
+ABBREV.xlsx
