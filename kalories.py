@@ -1,7 +1,11 @@
 from datetime import datetime
 from flask import Flask, request, flash, url_for, redirect, \
      render_template, abort
+
 from flask_sqlalchemy import SQLAlchemy
+from clarifai.client import ClarifaiApi
+import os
+import tempfile
 
 
 app = Flask(__name__)
@@ -65,6 +69,20 @@ def update_done():
     flash('Updated status')
     db.session.commit()
     return redirect(url_for('show_all'))
+
+
+@app.route('/get_suggestions', methods=['GET', 'POST'])
+def get_suggestions():
+    #clarifai_api = ClarifaiApi() # assumes environment variables are set.
+    #result = clarifai_api.tag_images(open('/static/.jpg', 'rb'))
+    result = {u'status_code': u'OK', u'status_msg': u'All images in request have co$
+    parsed= result['results'][0]['result']['tag']['classes']
+    answer=[]
+    for val in parsed:
+        if (db.session.query(food.name).filter_by(name=val).scalar() is not None):
+            answer.append(val)
+    return flask.jsonify(food_suggestions=answer)
+
 
 
 if __name__ == '__main__':
