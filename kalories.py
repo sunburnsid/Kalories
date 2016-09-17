@@ -84,6 +84,9 @@ def get_suggestions():
             answer.append(val)
     return flask.jsonify(food_suggestions=answer)
 
+@app.route('/storeData', methods=['POST'])
+def storeData():
+    content= request.get_json(silent=True)
 
 
 if __name__ == '__main__':
