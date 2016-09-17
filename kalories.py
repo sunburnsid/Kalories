@@ -3,6 +3,8 @@ from flask import Flask, request, flash, url_for, redirect, \
      render_template, abort
 
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import secure_filename
+
 from clarifai.client import ClarifaiApi
 import os
 import tempfile
@@ -38,11 +40,17 @@ class Food(db.Model):
         self.healthy  = healthy
         self.unit     = unit
 
+class API(db.model):
+    __tablename__ = 'food'
+    date = db.Column(db.String)
+    food = db.Column(db.Integer)
+    quantity = db.Column(db.Integer)
+    url = db.Column(db.String)
 
 @app.route('/')
 def show_all():
     return render_template('show_all.html',
-        todos=Todo.query.order_by(Todo.pub_date.desc()).all()
+        food=Food.query.order_by(Food.id.desc()).all()
     )
 
 
@@ -72,7 +80,7 @@ def update_done():
 
 
 @app.route('/get_suggestions', methods=['POST'])
-def get_suggestions():
+def getSuggestions():
     imagefile = flask.request.files.get('imagefile','')
     #clarifai_api = ClarifaiApi() # assumes environment variables are set.
     #result = clarifai_api.tag_images(open('/static/.jpg', 'rb'))
