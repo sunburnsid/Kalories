@@ -148,7 +148,7 @@ def confirmFood():
 
 @app.route('/getDay/<int:day>', methods = ['GET'])
 def giveDay(day):
-
+    return 0
 
 if __name__ == '__main__':
     app.run()
