@@ -27,7 +27,7 @@ class Food(db.Model):
     carbs = db.Column(db.Float)
     fat = db.Column(db.Float)
     calcium = db.Column(db.Float)
-    vitamins = db.Column(db.Float)
+    vitamins = db.Column(db.String(20))
     healthy = db.Column(db.Boolean)
     calories=db.Column(db.Float)
     unit = db.Column(db.String(60))
@@ -142,13 +142,27 @@ def confirmFood():
         calories += values["calories"]
         vitamins.add(values["vitamins"])
         healthy=values["healthy"]
-    return flask.jsonify(protein=protein,carbs=carbs, fat=fat,fiber=fiber,
-    calcium=calcium, vitamins=vitamins, healthy=healthy, calories=calories,
-    url=content['url'])
+    return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat, 
+        "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories},
+    "url":content['url']})
 
 @app.route('/getDay/<int:day>', methods = ['GET'])
 def giveDay(day):
-    return 0
+    protein, carbs, fat, calcium, calories = (0 for i in range(5))
+    foodpics = []
+    for key in session.query(api.food).filter_by(date=day).all():
+        f = session.query(food).get(key)
+        protein += f.protein
+        carbs += f.carbs
+        fat += f.fat
+        calcium += f.calcium
+        calories += f.calories
+        foodpics.append(f.url)
+
+    healthy = True
+
+    return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat, 
+        "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories}, "foodpics": foodpics})
 
 if __name__ == '__main__':
     app.run()
