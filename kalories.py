@@ -191,7 +191,7 @@ def getDay(day):
 #returns list of tuples containing url of picture and date
 @app.route('/allPictures', methods = ['GET'])
 def allPictures():
-    return jsonify( urlAndDate = db.session.query(API.url, API.date).order_by(API.date.desc()).all()) #.all() #.order_by(API.date.desc())
+    return jsonify( urlAndDate = db.session.query(API.url, API.date).order_by(API.date.desc()).all())
 
 #helper functions
 def randomword(length):
