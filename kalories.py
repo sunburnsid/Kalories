@@ -169,14 +169,16 @@ def getDay(day):
     protein, carbs, fat, calcium, calories = (0 for i in range(5))
     foodpics = []
     vitaminList = []
-    for key in db.session.query(API.food).filter_by(date=day).all():
-        f = db.session.query(API.food).get(key)
-        protein += f.protein
-        carbs += f.carbs
-        fat += f.fat
+    for key,amt,link in db.session.query(API.food, API.quantity, API.url).filter_by(date=day).all():
+        print key, amt
+        f = db.session.query(Food).filter_by(name=key).first()
+        print f
+        protein += f.protein*amt
+        carbs += f.carbs*amt
+        fat += f.fat*amt
         calcium += f.calcium
-        calories += f.calories
-        foodpics.append(f.url)
+        calories += f.calories*amt
+        foodpics.append(link)
         if f.vitaminA > 5   and "A" not in vitaminList: vitaminList.append("A")
         if f.vitaminB > 4   and "B" not in vitaminList: vitaminList.append("B")
         if f.vitaminC > 2   and "C" not in vitaminList: vitaminList.append("C")
