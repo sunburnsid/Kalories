@@ -102,11 +102,11 @@ def getSuggestions():
     print image
     print "image"
     base_id = image['base_id']
-    dest = "static/" + randomword(14) + ".png"
+    dest = "/static/" + randomword(14) + ".png"
 
     image_64_decode = base64.decodestring(base_id) 
-    image_result = open(dest, 'wb') # create a writable image and write the decoding result
-    image_result.write(image_64_decode)
+    with open(dest, 'wb') as f:
+        f.write(image_64_decode)
     print "decoded"
     #clarifai_api = ClarifaiApi() # assumes environment variables are set.
     clarifai_api = ClarifaiApi("Sa3eWiFzsFVygnleCNQAPvJacvIVAvkBBbN5cxmY", "qIf-5HaEzO225zuUaj5FTREU7iYAJLHU5_XrpHH_")
