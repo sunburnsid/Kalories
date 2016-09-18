@@ -130,6 +130,7 @@ def confirmFood():
 
     content = request.get_json(silent=False, force=True)
     print content
+    day = datetime.strftime('%d') * 10000 + datetime.strftime('%m')*100 + datetime.strftime('%y')
 
     #iterate through list in json and accumulate nutrition values
     for food,amt in content['content']:
@@ -149,8 +150,9 @@ def confirmFood():
         calories += values[8]*amt
         healthy  =  values[9] or healthy
 
-        db.session.add(API())
-        values = session.query(Food.protein, Food.carbs, Food.fat,
+        db.session.add(API(day, db.session.query(Food.id).filter_by(name = food),
+            amt, content['url']))
+        values = db.session.query(Food.protein, Food.carbs, Food.fat,
         Food.calcium, Food.vitamins, Food.healthy, Food.calories).filter_by(
         name = food).first()
 
@@ -176,11 +178,11 @@ def confirmFood():
     "url":content['url']})
 
 @app.route('/getDay/<int:day>', methods = ['GET'])
-def giveDay(day):
+def getDay(day):
     protein, carbs, fat, calcium, calories = (0 for i in range(5))
     foodpics = []
-    for key in session.query(api.food).filter_by(date=day).all():
-        f = session.query(food).get(key)
+    for key in db.session.query(API.food).filter_by(date=day).all():
+        f = db.session.query(food).get(key)
         protein += f.protein
         carbs += f.carbs
         fat += f.fat
@@ -194,7 +196,7 @@ def giveDay(day):
 
 @app.route('/allPictures', methods = ['GET'])
 def allPictures():
-    return session.query(API.url).order_by(API.date)
+    return db.session.query(API.url)
 
 #helper functions
 def randomword(length):
