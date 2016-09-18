@@ -16,9 +16,9 @@ def initiate():
 	donut = Food('donut', 1,2,3,4,5,6,7,9,True, 20, 'slice')
 	db.session.add(donut)
 
-	br = API(120316, 0, 2, '/static/yyy.png')
-	lunch = API(120316, 0, 1, '/static/yygg.png')
-	din = API(120316, 0, 3, '/static/yuy.png')
+	br = API(120316, "pizza", 2, '/static/yyy.png')
+	lunch = API(130316, "burger", 1, '/static/yygg.png')
+	din = API(120316, "cola", 3, '/static/yuy.png')
 
 	db.session.add(lunch)
 	db.session.add(br)
