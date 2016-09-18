@@ -190,7 +190,14 @@ def getDay(day):
 
 @app.route('/allPictures', methods = ['GET'])
 def allPictures():
-    return db.session.query(API.url)
+    #bleh= db.session.query(API.url) #.all() #.order_by(API.date.desc())
+    #bleh = db.session.query(API.url).all()
+    for picture in db.session.query(API.url).all():
+        #f = db.session.query(API.url).select().where(API.columns.url==picture)
+        #print (f.url)
+        print db.session.execute(API.select().where(API.columns.url ==picture))
+    print (bleh)
+    return 3
 
 #helper functions
 def randomword(length):
