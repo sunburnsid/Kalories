@@ -168,6 +168,7 @@ def confirmFood():
 def getDay(day):
     protein, carbs, fat, calcium, calories = (0 for i in range(5))
     foodpics = []
+    vitaminList = []
     for key in db.session.query(API.food).filter_by(date=day).all():
         f = db.session.query(food).get(key)
         protein += f.protein
@@ -176,10 +177,14 @@ def getDay(day):
         calcium += f.calcium
         calories += f.calories
         foodpics.append(f.url)
-        healthy = True
+        if f.vitaminA > 5   and "A" not in vitaminList: vitaminList.append("A")
+        if f.vitaminB > 4   and "B" not in vitaminList: vitaminList.append("B")
+        if f.vitaminC > 2   and "C" not in vitaminList: vitaminList.append("C")
+        if f.vitaminK > 0.5 and "K" not in vitaminList: vitaminList.append("K")
 
-    return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat, 
-        "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories}, "foodpics": foodpics})
+    return jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat,
+        "calcium":calcium, "calories":calories},"vitamins":vitaminList,
+        "foodpics":foodpics})
 
 @app.route('/allPictures', methods = ['GET'])
 def allPictures():
