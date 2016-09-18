@@ -5,19 +5,16 @@ import csv
 def initiate():
 	db.create_all()
 
-	protein, carbs, fat, calcium,
-        vitaminA, vitaminB, vitaminC, vitaminK, healthy, calories, unit
-
-	pizza = Food('Pizza', 12,36,10,7,11,2,0,False, 285, 'slice')
+	pizza = Food('pizza', 12,36,10,7,11,6,2,0,False, 285, 'slice')
 	db.session.add(pizza)
-	burger = Food('Burger', 20,29,17,12,0,38,0,3,False, 354, 'item')
+	burger = Food('burger', 20,29,17,12,0,38,0,3,False, 354, 'item')
 	db.session.add(burger)
-	coke = Food('Cola', 0,39,0,0,0,0,12,0,False, 140, 'can')
+	coke = Food('cola', 0,39,0,0,0,0,12,0,False, 140, 'can')
 	db.session.add(coke)
-	red = Food('Red bull', 1,2,3,4,5,6,7,9,True, 20, 'slice')
+	red = Food('red bull', 1,2,3,4,5,6,7,9,True, 20, 'slice')
 	db.session.add(red)
 	donut = Food('donut', 1,2,3,4,5,6,7,9,True, 20, 'slice')
-	db.session.add(red)
+	db.session.add(donut)
 
 	br = API(120316, 0, 2, '/static/yyy.png')
 	lunch = API(120316, 0, 1, '/static/yygg.png')
@@ -46,5 +43,5 @@ def importCSV():
             db.session.commit()
 
 if __name__ == '__main__':
-	#initiate()
-        importCSV()
+	initiate()
+        #importCSV()
