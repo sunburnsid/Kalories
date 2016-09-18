@@ -179,14 +179,9 @@ def giveDay(day):
 def allPictures():
     return session.query(API.url).order_by(API.date)
 
-
-
-
 #helper functions
 def randomword(length):
    return ''.join(random.choice(string.lowercase) for i in range(length))
-
-
 
 if __name__ == '__main__':
     app.run(host= '0.0.0.0')
