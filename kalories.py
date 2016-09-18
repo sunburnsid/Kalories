@@ -18,7 +18,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///carrots.db'
 app.config['DEBUG'] = True
 db = SQLAlchemy(app)
 
-
 class Food(db.Model):
     __tablename__ = 'food'
     id = db.Column('food_id', db.Integer, primary_key=True)
@@ -63,6 +62,7 @@ class API(db.Model):
         self.food=food
         self.quantity=quantity
         self.url=url
+
 
 @app.route('/')
 def show_all():
