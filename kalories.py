@@ -108,7 +108,7 @@ def getSuggestions():
     image_result.write(image_64_decode)
     print "decoded"
     #clarifai_api = ClarifaiApi() # assumes environment variables are set.
-    clarifai_api = ClarifaiApi("Sa3eWiFzsFVygnleCNQAPvJacvIVAvkBBbN5cxmY", "qIf-5HaEzO225zuUaj5FTREU7iYAJLHU5_XrpHH_") # assumes environment varia$
+    clarifai_api = ClarifaiApi("Sa3eWiFzsFVygnleCNQAPvJacvIVAvkBBbN5cxmY", "qIf-5HaEzO225zuUaj5FTREU7iYAJLHU5_XrpHH_")
     result = clarifai_api.tag_images(open(dest, 'rb'))
 
     print "api call"
@@ -133,8 +133,8 @@ def confirmFood():
 
     #iterate through list in json and accumulate nutrition values
     for food,amt in content['content']:
-        values = session.query(food.protein, food.carbs, food.fat,
-        food.calcium, food.vitamins, food.healthy, food.calories).filter_by(
+        values = session.query(Food.protein, Food.carbs, Food.fat,
+        Food.calcium, Food.vitamins, Food.healthy, Food.calories).filter_by(
         name = food).first()
 
         protein += values["protein"]*amt
@@ -175,8 +175,18 @@ def giveDay(day):
     return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat, 
         "calcium":calcium, "vitamins":vitamins, "healthy":healthy, "calories":calories}, "foodpics": foodpics})
 
+@app.route('/allPictures', methods = ['GET'])
+def allPictures():
+    return session.query(API.url).order_by(API.date)
+
+
+
+
+#helper functions
 def randomword(length):
    return ''.join(random.choice(string.lowercase) for i in range(length))
+
+
 
 if __name__ == '__main__':
     app.run(host= '0.0.0.0')
