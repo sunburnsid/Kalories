@@ -186,16 +186,10 @@ def getDay(day):
         "calcium":calcium, "calories":calories},"vitamins":vitaminList,
         "foodpics":foodpics})
 
+#returns list of tuples containing url of picture and date
 @app.route('/allPictures', methods = ['GET'])
 def allPictures():
-    #bleh= db.session.query(API.url) #.all() #.order_by(API.date.desc())
-    #bleh = db.session.query(API.url).all()
-    for picture in db.session.query(API.url).all():
-        #f = db.session.query(API.url).select().where(API.columns.url==picture)
-        #print (f.url)
-        print db.session.execute(API.select().where(API.columns.url ==picture))
-    print (bleh)
-    return 3
+    return jsonify( urlAndDate = db.session.query(API.url, API.date).order_by(API.date.desc()).all()) #.all() #.order_by(API.date.desc())
 
 #helper functions
 def randomword(length):
