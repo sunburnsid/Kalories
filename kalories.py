@@ -170,7 +170,7 @@ def getDay(day):
     foodpics = []
     vitaminList = []
     for key in db.session.query(API.food).filter_by(date=day).all():
-        f = db.session.query(food).get(key)
+        f = db.session.query(API.food).get(key)
         protein += f.protein
         carbs += f.carbs
         fat += f.fat
