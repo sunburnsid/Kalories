@@ -5,14 +5,19 @@ import csv
 def initiate():
 	db.create_all()
 
-	pizza = Food('Pizza', 1,2,3,4,5,6,7,8,False, 45, 'slice')
+	protein, carbs, fat, calcium,
+        vitaminA, vitaminB, vitaminC, vitaminK, healthy, calories, unit
+
+	pizza = Food('Pizza', 12,36,10,7,11,2,0,False, 285, 'slice')
 	db.session.add(pizza)
-	burger = Food('Burger', 1,2,3,4,5,6,7,8,False, 60, 'piece')
+	burger = Food('Burger', 20,29,17,12,0,38,0,3,False, 354, 'item')
 	db.session.add(burger)
-	coke = Food('Coke', 1,2,4,5,6,7,8,9,False, 50, 'bottle')
+	coke = Food('Cola', 0,39,0,0,0,0,12,0,False, 140, 'can')
 	db.session.add(coke)
-	honey = Food('Honeydew', 1,2,3,4,5,6,7,9,True, 20, 'slice')
-	db.session.add(honey)
+	red = Food('Red bull', 1,2,3,4,5,6,7,9,True, 20, 'slice')
+	db.session.add(red)
+	donut = Food('donut', 1,2,3,4,5,6,7,9,True, 20, 'slice')
+	db.session.add(red)
 
 	br = API(120316, 0, 2, '/static/yyy.png')
 	lunch = API(120316, 0, 1, '/static/yygg.png')
