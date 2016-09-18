@@ -117,8 +117,8 @@ def getSuggestions():
     answer = []
     print parsed
     for val in parsed:
-        print val
         if (db.session.query(Food).filter(Food.name.contains(val)) is not None):
+            print val
             answer.append(val)
     return jsonify(suggestions=answer, url=dest)
 
@@ -126,36 +126,39 @@ def getSuggestions():
 def confirmFood():
     #initialize values
     healthy=False
-    protein, carbs, fat, calcium, calories, vitaminA, vitaminB, vitaminC,
-    vitaminK = (0 for i in range(9))
+    protein, carbs, fat, calcium, calories, vitaminA, vitaminB, vitaminC, vitaminK = (0 for i in range(9))
 
-    content= request.get_json(silent=True)
+    content = request.get_json(silent=False, force=True)
+    print content
 
     #iterate through list in json and accumulate nutrition values
     for food,amt in content['content']:
-        values = session.query(food.protein, food.carbs, food.fat,
-        food.calcium, food.vitamins, food.healthy, food.calories).filter_by(
-        name = food).first()
+        values = db.session.query(Food.protein, Food.carbs, Food.fat,
+        Food.calcium, Food.vitaminA, Food.vitaminB,Food.vitaminB,Food.vitaminK,
+        Food.calories, Food.healthy).filter_by(name = food).first()
+        print values
 
-        protein += values["protein"]*amt
-        carbs += values["carbs"]*amt
-        fat += values["fat"]*amt
-        calcium += values["calcium"]
-        calories += values["calories"]
-        vitaminA += values["vitaminA"]
-        vitaminB += values["vitaminB"]
-        vitaminC += values["vitaminC"]
-        vitaminK += values["vitaminK"]
-        healthy=values["healthy"] or healthy
+        protein += values[0]*amt
+        carbs += values[1]*amt
+        fat += values[2]*amt
+        calcium += values[3]
+        vitaminA += values[4]
+        vitaminB += values[5]
+        vitaminC += values[6]
+        vitaminK += values[7]
+        calories += values[8]*amt
+        healthy  =  values[9] or healthy
+
+        db.session.add(API())
     #add vitamins
     vitaminList=[]
-    vitaminRequirements=[5, 0.5, 10, 10]
-    for vit,amt in [("A",5),("B",0.5),("C",10),("K",10)]:
-        if (values["vitamin" + vit] > amt):
+
+    for ind,vit,amt in [(4,"A",5),(5, "B",4),(6, "C",2),(7, "K",0.5)]:
+        if (values[ind] > amt):
             vitaminList.append(vit)
 
-    return flask.jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat,
-        "calcium":calcium, "vitamins":vitaminList, "healthy":healthy, "calories":calories},
+    return jsonify({"food":{"protein":protein,"carbs":carbs, "fat":fat,
+        "calcium":calcium, "calories":calories},"vitamins":vitaminList, "healthy":healthy,
     "url":content['url']})
 
 @app.route('/getDay/<int:day>', methods = ['GET'])
