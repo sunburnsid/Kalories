@@ -10,6 +10,7 @@ import os
 import tempfile
 import base64
 import random, string
+import time
 
 
 app = Flask(__name__)
@@ -53,7 +54,7 @@ class API(db.Model):
     __tablename__ = 'api'
     id = db.Column('api_id', db.Integer, primary_key=True)
     date = db.Column(db.Integer)
-    food = db.Column(db.Integer) #ForeignKey("food.name"))
+    food = db.Column(db.String) #ForeignKey("food.name"))
     quantity = db.Column(db.Integer)
     url = db.Column(db.String)
 
@@ -130,7 +131,8 @@ def confirmFood():
 
     content = request.get_json(silent=False, force=True)
     print content
-    day = datetime.strftime('%d') * 10000 + datetime.strftime('%m')*100 + datetime.strftime('%y')
+    rn = time.localtime()
+    day = time.strftime('%d',rn) * 10000 + time.strftime('%m',rn)*100 + time.strftime('%y', rn)
 
     #iterate through list in json and accumulate nutrition values
     for food,amt in content['content']:
@@ -150,22 +152,7 @@ def confirmFood():
         calories += values[8]*amt
         healthy  =  values[9] or healthy
 
-        db.session.add(API(day, db.session.query(Food.id).filter_by(name = food),
-            amt, content['url']))
-        values = db.session.query(Food.protein, Food.carbs, Food.fat,
-        Food.calcium, Food.vitamins, Food.healthy, Food.calories).filter_by(
-        name = food).first()
-
-        protein += values["protein"]*amt
-        carbs += values["carbs"]*amt
-        fat += values["fat"]*amt
-        calcium += values["calcium"]
-        calories += values["calories"]
-        vitaminA += values["vitaminA"]
-        vitaminB += values["vitaminB"]
-        vitaminC += values["vitaminC"]
-        vitaminK += values["vitaminK"]
-        healthy=values["healthy"] or healthy
+        db.session.add(API(day, food, amt, content['url']))
     #add vitamins
     vitaminList=[]
 
